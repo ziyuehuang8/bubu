@@ -58,7 +58,6 @@
   <h1>打布布游戏</h1>
   <div id="score">分数：0</div>
   <div id="game">
-    <!-- 9个地洞 -->
     <div class="hole" id="hole0"></div>
     <div class="hole" id="hole1"></div>
     <div class="hole" id="hole2"></div>
@@ -69,23 +68,44 @@
     <div class="hole" id="hole7"></div>
     <div class="hole" id="hole8"></div>
   </div>
-  <button onclick="startGame()">开始游戏</button>
+  <button id="gameButton" onclick="toggleGame()">开始游戏</button>
 
   <script>
     let score = 0;
     let currentMole = null;
-    let gameInterval;
+    let gameInterval = null;
+    let isRunning = false;
+
+    function toggleGame() {
+      if (isRunning) {
+        stopGame();
+      } else {
+        startGame();
+      }
+    }
 
     function startGame() {
       score = 0;
+      isRunning = true;
       document.getElementById("score").innerText = "分数：" + score;
+      document.getElementById("gameButton").innerText = "结束游戏";
       clearInterval(gameInterval);
       gameInterval = setInterval(showMole, 800);
     }
 
+    function stopGame() {
+      isRunning = false;
+      clearInterval(gameInterval);
+      if (currentMole) {
+        currentMole.innerHTML = "";
+        currentMole = null;
+      }
+      document.getElementById("gameButton").innerText = "开始游戏";
+    }
+
     function showMole() {
       if (currentMole !== null) {
-        currentMole.innerHTML = ""; // 清除上一只布布
+        currentMole.innerHTML = "";
       }
 
       const index = Math.floor(Math.random() * 9);
@@ -103,7 +123,6 @@
       hole.appendChild(mole);
       currentMole = hole;
 
-      // 布布显示后1秒自动消失
       setTimeout(() => {
         if (hole === currentMole) {
           hole.innerHTML = "";
